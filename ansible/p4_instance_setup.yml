@@ -1,0 +1,30 @@
+---
+- name: Getting P4 binaries and installing server
+
+  hosts: perforce_server
+  remote_user: ubuntu
+  environment:
+    SDP: /hxdepots/sdp
+
+  tasks:
+    - name: Get Perforce Helix binaries
+      ansible.builtin.command: /hxdepots/sdp/helix_binaries/get_helix_binaries.sh
+      become: yes
+      become_user: root
+      args:
+        chdir: /hxdepots/sdp/helix_binaries
+
+    - name: Copy 'mkdirs.1.cfg' file to '$SDP/Server/Unix/setup' location
+      ansible.builtin.copy:
+        src: ./mkdirs.1.cfg
+        dest: /hxdepots/sdp/Server/Unix/setup/
+        owner: perforce
+        group: perforce
+        mode: '0755'
+
+    - name: Install initial setup
+      ansible.builtin.command: /hxdepots/sdp/Server/Unix/setup/mkdirs.sh 1 
+      become: yes
+      become_user: root
+      args:
+        chdir: /hxdepots/sdp/Server/Unix/setup

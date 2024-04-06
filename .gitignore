@@ -1,0 +1,6 @@
+terraform-p4-key.pem
+ansible/ansible_key
+ansible/ansible_key.pub
+terraform.tfstate
+.terraform/
+.terraform*

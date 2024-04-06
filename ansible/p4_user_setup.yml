@@ -1,0 +1,35 @@
+---
+- name: Add Perforce user, groups and sudo permissions
+  hosts: perforce_server
+  remote_user: ubuntu
+
+  tasks:
+  - name: Add 'perforce' group
+    ansible.builtin.group:
+      name: perforce
+      state: present
+
+  - name: Add 'perforce' user
+    ansible.builtin.user:
+      name: perforce
+      comment: Perforce User
+      uid: 1001
+      shell: /bin/bash
+      groups: perforce,sudo
+      append: yes
+
+  - name: Add 'perforce' user to sudoers directory
+    ansible.builtin.command: touch /etc/sudoers.d/perforce
+    become: true
+
+  - name: Change mode on '/etc/sudoers.d/perforce' file
+    ansible.builtin.command: chmod 0600 /etc/sudoers.d/perforce
+    become: true
+
+  - name: Add Perforce user no password option
+    shell: echo "perforce ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/perforce
+    become: true
+
+  - name: Chamge mode on '/etc/sudoers.d/perforce' file
+    ansible.builtin.command: chmod 0400 /etc/sudoers.d/perforce
+    become: true
