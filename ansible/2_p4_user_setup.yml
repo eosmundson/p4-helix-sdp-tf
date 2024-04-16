@@ -1,0 +1,56 @@
+---
+- name: Add Perforce user, groups and sudo permissions
+  hosts: perforce_server
+  remote_user: ubuntu
+  become_user: root
+  become: true
+  tasks:
+    - name: Add 'perforce' group
+      ansible.builtin.group:
+        name: perforce
+        state: present
+    - name: Add 'perforce' user
+      ansible.builtin.user:
+        name: perforce
+        comment: Perforce User
+        uid: 1001
+        shell: /bin/bash
+        groups: perforce,sudo
+        append: true
+    - name: Add Perforce user no password option
+      ansible.builtin.blockinfile:
+        path: /etc/sudoers.d/perforce
+        block: |
+          "Cmnd_Alias P4_SVC = /usr/bin/systemctl start p4d_*, \
+              /usr/bin/systemctl start p4d_*, \
+              /usr/bin/systemctl stop p4d_*, \
+              /usr/bin/systemctl restart p4d_*, \
+              /usr/bin/systemctl status p4d_*, \
+              /usr/bin/systemctl cat p4d_*, \
+              /usr/bin/systemctl start p4dtg_*, \
+              /usr/bin/systemctl stop p4dtg_*, \
+              /usr/bin/systemctl restart p4dtg_*, \
+              /usr/bin/systemctl status p4dtg_*, \
+              /usr/bin/systemctl cat p4dtg_*, \
+              /usr/bin/systemctl start p4broker_*, \
+              /usr/bin/systemctl stop p4broker_*, \
+              /usr/bin/systemctl restart p4broker_*, \
+              /usr/bin/systemctl status p4broker_*, \
+              /usr/bin/systemctl cat p4broker_*, \
+              /usr/bin/systemctl start p4p_*, \
+              /usr/bin/systemctl stop p4p_*, \
+              /usr/bin/systemctl restart p4p_*, \
+              /usr/bin/systemctl status p4p_*, \
+              /usr/bin/systemctl cat p4p_*, \
+              /usr/bin/systemctl start p4prometheus*, \
+              /usr/bin/systemctl stop p4prometheus*, \
+              /usr/bin/systemctl restart p4prometheus*, \
+              /usr/bin/systemctl status p4prometheus*, \
+              /usr/bin/systemctl cat p4prometheus*, \
+              /usr/bin/setcap, \
+              /usr/bin/getcap
+          perforce $SERVERNAME = (root) NOPASSWD: P4_SVC"
+        create: true
+        mode: '400'
+        owner: root
+        group: root
