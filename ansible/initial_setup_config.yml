@@ -1,0 +1,52 @@
+---
+- name: Initial setup and config of p4 server
+  hosts: perforce_server
+  user: ubuntu
+  become: true
+  tasks:
+    - name: Update and upgrade software packages
+      ansible.builtin.apt:
+        name: "*"
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+    - name: Install python3-pip
+      ansible.builtin.apt:
+        name: python3-pip
+        state: present
+    - name: Install 'tuned' package
+      ansible.builtin.apt:
+        name: tuned
+        state: present
+    - name: Create tuned directory for disabling Transparent Huge Pages (THP)
+      ansible.builtin.file:
+        path: /etc/tuned/nothp_profile
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Create 'tuned.conf' file with nothp profile
+      ansible.builtin.blockinfile:
+        path: /etc/tuned/nothp_profile/tuned.conf
+        block: |
+          [main]
+          include=throughput-performance
+
+          [vm]
+          transparent_hugepages=never
+        create: true
+        mode: '744'
+        owner: root
+        group: root
+    - name: Set variable for NoTHP profile
+      ansible.builtin.set_fact:
+        profile: "{{ PROFILE }}"
+    - name: Enable nothp_profile
+      ansible.builtin.command: tuned-adm profile "{{ profile }}"
+      become: true
+      become_user: root
+      register: my_output
+      changed_when: my_output.rc != 0
+    - name: Change timezone to CDT
+      community.general.timezone:
+        name: America/Chicago

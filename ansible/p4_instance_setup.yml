@@ -9,11 +9,11 @@
   tasks:
     - name: Get Perforce Helix binaries
       ansible.builtin.command: /hxdepots/sdp/helix_binaries/get_helix_binaries.sh
-      become: yes
+      become: true
       become_user: root
       args:
         chdir: /hxdepots/sdp/helix_binaries
-
+        creates: /hxdepots/sdp/helix_binaries/p4*
     - name: Copy 'mkdirs.1.cfg' file to '$SDP/Server/Unix/setup' location
       ansible.builtin.copy:
         src: ./mkdirs.1.cfg
@@ -21,10 +21,10 @@
         owner: perforce
         group: perforce
         mode: '0755'
-
     - name: Install initial setup
-      ansible.builtin.command: /hxdepots/sdp/Server/Unix/setup/mkdirs.sh 1 
-      become: yes
+      ansible.builtin.command: /hxdepots/sdp/Server/Unix/setup/mkdirs.sh 1
+      become: true
       become_user: root
       args:
         chdir: /hxdepots/sdp/Server/Unix/setup
+        creates: /p4/

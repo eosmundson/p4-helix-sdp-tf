@@ -1,6 +1,5 @@
-terraform-p4-key.pem
-ansible/ansible_key
-ansible/ansible_key.pub
+p4-helix-sdp-tf-key.pem
 terraform.tfstate*
 .terraform/
 .terraform*
+deploy_p4d_aws.sh

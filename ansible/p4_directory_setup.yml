@@ -1,56 +1,51 @@
 ---
-- hosts: perforce_server
+- name: Setting up directories for P4D server SDP instance
+  hosts: perforce_server
   remote_user: ubuntu
-
   environment:
     SDP: /hxdespots/sdp
-    I: 1
-
-  tasks:    
-  - name: Create 'hxdepots'directory for SDP install
-    ansible.builtin.file:
-      path: /hxdepots
-      state: directory
-      owner: perforce
-      group: perforce
-      mode: '0755'
-    become: true
-
-  - name: Create 'hxlogs' directory for SDP install
-    ansible.builtin.file:
-      path: /hxlogs
-      state: directory
-      owner: perforce
-      group: perforce
-      mode: '0755'
-    become: true
-
-  - name: Create 'hxmetadata' directory for SDP install
-    ansible.builtin.file:
-      path: /hxmetadata
-      state: directory
-      owner: perforce
-      group: perforce
-      mode: '0755'
-    become: true
-
-  - name: Download 'sdp.Unix.tgz' tarball
-    ansible.builtin.copy:
-      src: ./sdp.Unix.tgz
-      dest: /hxdepots
-
-  - name: Extract contents of sdp.Unix.tar.gz file
-    ansible.builtin.unarchive:
-      src: /hxdepots/sdp.Unix.tgz
-      dest: /hxdepots/
-      remote_src: yes
-
-  - name: Make SDP directory writable by 'perforce.perforce' user and group
-    ansible.builtin.file:
-      path: /hxdepots/sdp
-      state: directory
-      recurse: yes
-      owner: perforce
-      group: perforce
-      mode: '0775'
-    become: true
+    I: '1'
+  tasks:
+    - name: Create 'hxdepots'directory for SDP install
+      ansible.builtin.file:
+        path: /hxdepots
+        state: directory
+        owner: perforce
+        group: perforce
+        mode: '0755'
+      become: true
+    - name: Create 'hxlogs' directory for SDP install
+      ansible.builtin.file:
+        path: /hxlogs
+        state: directory
+        owner: perforce
+        group: perforce
+        mode: '0755'
+      become: true
+    - name: Create 'hxmetadata' directory for SDP install
+      ansible.builtin.file:
+        path: /hxmetadata
+        state: directory
+        owner: perforce
+        group: perforce
+        mode: '0755'
+      become: true
+    - name: Download 'sdp.Unix.tgz' tarball
+      ansible.builtin.copy:
+        src: ./sdp.Unix.tgz
+        dest: /hxdepots
+        mode: '755'
+    - name: Extract contents of sdp.Unix.tar.gz file
+      ansible.builtin.unarchive:
+        src: /hxdepots/sdp.Unix.tgz
+        dest: /hxdepots/
+        remote_src: true
+    - name: Make SDP directory writable by 'perforce.perforce' user and group
+      ansible.builtin.file:
+        path: /hxdepots/sdp
+        state: directory
+        recurse: true
+        owner: perforce
+        group: perforce
+        mode: '0775'
+      become: true
