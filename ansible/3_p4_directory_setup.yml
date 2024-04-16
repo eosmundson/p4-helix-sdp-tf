@@ -1,6 +1,6 @@
 ---
 - name: Setting up directories for P4D server SDP instance
-  hosts: perforce_server
+  hosts: p4server
   remote_user: ubuntu
   environment:
     SDP: /hxdespots/sdp

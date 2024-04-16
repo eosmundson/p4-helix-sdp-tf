@@ -1,7 +1,6 @@
 ---
 - name: Getting P4 binaries and installing server
-
-  hosts: perforce_server
+  hosts: p4server
   remote_user: ubuntu
   environment:
     SDP: /hxdepots/sdp

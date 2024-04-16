@@ -1,6 +1,6 @@
 ---
 - name: Add Perforce user, groups and sudo permissions
-  hosts: perforce_server
+  hosts: p4server
   remote_user: ubuntu
   become_user: root
   become: true

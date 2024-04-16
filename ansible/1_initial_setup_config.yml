@@ -1,13 +1,13 @@
 ---
 - name: Initial setup and config of p4 server
-  hosts: perforce_server
+  hosts: p4server
   user: ubuntu
   become: true
   tasks:
     - name: Update and upgrade software packages
       ansible.builtin.apt:
         name: "*"
-        state: present
+        state: latest
         update_cache: true
         cache_valid_time: 3600
     - name: Install python3-pip

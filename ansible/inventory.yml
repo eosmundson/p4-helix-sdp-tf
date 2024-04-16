@@ -1,2 +1,6 @@
-perforce_server:
-  hosts: 54.186.168.238
+deployment:
+  hosts:
+    p4server:
+      ansible_host: 0.0.0.0
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
